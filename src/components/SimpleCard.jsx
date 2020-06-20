@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -9,6 +9,10 @@ import Typography from '@material-ui/core/Typography';
 const useStyles = makeStyles({
     root: {
         minWidth: 275,
+        display: "flex",
+        alignItems: 'center',
+        justifyContent: 'center',
+        margin: "2em"
     },
     title: {
         fontSize: 14,
@@ -18,33 +22,41 @@ const useStyles = makeStyles({
     },
 });
 
-export default function SimpleCard({vocab}) {
+export default function SimpleCard({vocab,handleFlip}) { //einzelne Vocab und handleFlip-Methode werden von oben gepassed!
 
     const classes = useStyles();
 
-    const [cardState, setCardState] = useState(false)
+ /*   const [cardState, setCardState] = useState(false)
 
+
+  
 
    function handleFlip() {
-        console.log(cardState.bool)
      !cardState ? setCardState(true): setCardState(false)
-   }
+   }*/
 
+  /* useEffect(() => {
+       console.log("I am about to get mounted");
+   return () => {
+       console.log("I am about to get unmouted");
+    }}, [cardState])
+
+*/
+
+    
 
 
     return (
         <Card className={classes.root}>
             <CardContent>
                 <Typography className={classes.title}>
-                    {cardState? vocab.name : <p>Hidden</p> }
-                </Typography>
-
-                <Typography variant="body2" component="p">
-                    {cardState ? vocab.message : <p>Hidden</p>}
+                    {vocab.flipState? vocab.name : "???" }
                 </Typography>
             </CardContent>
             <CardActions>
-                <Button size="small" onClick={handleFlip}>Learn More</Button>
+                <Button size="small" onClick={() => handleFlip(vocab.id)}>
+                    {vocab.flipState ? <p>Hide</p> : <p>Show</p>}
+                </Button>
             </CardActions>
         </Card>
     );
