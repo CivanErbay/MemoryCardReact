@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
 import SimpleCard from "./SimpleCard";
 import {fetchVocabs} from "../utils/api";
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -13,18 +14,43 @@ const useStyles = makeStyles((theme) => ({
         flexDirection: 'row',
         padding: theme.spacing(10),
     },
+    paper: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+        '& > *': {
+            margin: theme.spacing(1),
+            width: theme.spacing(16),
+            height: theme.spacing(16),
+    }
 
 
-}));
+}}));
 
 export default function CenteredGrid() {
     const classes = useStyles();
 
     const [vocabs, setVocabs] = useState([])  //setze den useState mit den Daten aus fetchVocabs()
+    const [count, setCount] = useState(0)
 
     // die handleFlip Methode wird zwar hier im Parent-Element definiert (Game.jsx) wird aber im Child-Element aufgerufen (SimpleCard.jsx)
-    const handleFlip = id => {      //Je nachdem welche Karte aufgerufen wird, wird die id vergeben (da jede Karte eine eindeutige id aufweist)
-        const updatedVocabs = vocabs.map(vocab => {  // es wird über vocabs gemapped und nur die Karte, auf die man gedrückt hat wird der flipState verändert, mithilfe des id-Abgleichs
+    const handleFlip = id => {           //Je nachdem welche Karte aufgerufen wird, wird die id vergeben (da jede Karte eine eindeutige id aufweist)
+        let trueCount = 0
+        for (let i = 0 ;i < vocabs.length; i++) {
+            vocabs[i].flipState && trueCount ++
+        }
+
+        if (trueCount >= 2 ) {
+            alert("Only 2 flipped cards at a time")
+            for (let i = 0; i < vocabs.length; i++) {
+                vocabs[i].flipState = false;
+            }
+            setVocabs(vocabs)
+            return
+        }
+
+        const updatedVocabs = vocabs.map(vocab => {// es wird über vocabs gemapped und nur die Karte, auf die man gedrückt hat wird der flipState verändert, mithilfe des id-Abgleichs
             if (vocab.id === id)                       // der veränderte Wert wird als Array zurückgeben (aufgrund von .map()), d.h. der Array ist bis auf eine Stelle gleich
             {vocab.flipState = !vocab.flipState}
             return vocab
@@ -47,7 +73,8 @@ export default function CenteredGrid() {
         for(let i = 0; i < vocabs.length; i++) {        //Loop 1
             for(let j = i+1; j < vocabs.length; j++) {  //Loop 2
                 if(vocabs[i].flipState === true && vocabs[j].flipState === true &&  vocabs[i].message === vocabs[j].message ) {
-                    console.log("Oh yes oh yes") //Wenn zwei Karten true sind (also nicht versteckt sind, bzw "geöffnet wurden) und diese GLEICHZEITIG diesselbe message (Vergleichswert),
+                    setCount(count+1)
+                    alert("You found a matching pair!!")  //Wenn zwei Karten true sind (also nicht versteckt sind, bzw "geöffnet wurden) und diese GLEICHZEITIG diesselbe message (Vergleichswert),
                     //dann gibt es ein match! und die Erfolgsmeldung "Oh yes oh yes" erfolgt in der Konsole! - MEMORY
                 }
             }
@@ -56,12 +83,15 @@ export default function CenteredGrid() {
 
     return (
         <div className={classes.root}>
+            <div className={classes.paper}>
+                <Paper elevation={3} children={count} />
+            </div>
 
+            <Grid container spacing={3}>
 
-
-                    {vocabs.map(vocab => <SimpleCard vocab={vocab} handleFlip={handleFlip}/> )
+                {vocabs.map(vocab => <Grid item xs><SimpleCard vocab={vocab} handleFlip={handleFlip}/> </Grid> )
                     }
-
+            </Grid>
 
         </div>
     );

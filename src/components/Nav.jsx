@@ -30,7 +30,7 @@ export default function CenteredTabs() {
                 centered
                 className="Nav"
             >
-                <Link to="/home"><Tab label="Home"/></Link>
+                <Link to="/"><Tab label="Home"/></Link>
                 <Link to="/learn"><Tab label="MemLearn"/></Link>
                 <Link to="/about"> <Tab label="About"/></Link>
             </Tabs>
