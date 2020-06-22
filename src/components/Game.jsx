@@ -87,6 +87,9 @@ export default function CenteredGrid() {
                 <Paper elevation={3} children={count} />
             </div>
 
+{/*
+            funktionierendes MUI - Grid (1. wrapping Grid Container, 2. Grid item (dynamisch erzeugt), 3. jeweiliges Element)
+*/}
             <Grid container spacing={3}>
 
                 {vocabs.map(vocab => <Grid item xs><SimpleCard vocab={vocab} handleFlip={handleFlip}/> </Grid> )
